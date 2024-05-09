@@ -50,7 +50,7 @@ constructor(private readonly prisma: PrismaClient) {
     return user;
   }
 
-   async searchForLogin(key: 'email' | 'name', value: string) {
+  async searchForLogin(key: 'email' | 'name', value: string) {
 
     if (!['email', 'name'].includes(key)) {
       throw new HttpError(404, 'Not Found', 'Invalid query parameters');

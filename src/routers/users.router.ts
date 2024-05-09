@@ -28,4 +28,3 @@ export class UsersRouter {
     controller.delete.bind(controller))
   }
 }
-

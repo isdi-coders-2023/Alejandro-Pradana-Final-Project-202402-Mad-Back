@@ -15,7 +15,7 @@ const debug = createDebug('W9E:users:controller');
 export class UsersController extends BaseController<User, UserCreateDto>{
  
   constructor(protected readonly repo: WithLoginRepo<User,UserCreateDto>) {
-     super(repo, userCreateDtoSchema, userUpdateDtoSchema) // UserCreateDtoSchema, userUpdateDtoSchema;
+    super(repo, userCreateDtoSchema, userUpdateDtoSchema) // UserCreateDtoSchema, userUpdateDtoSchema;
     
     debug('Instantiated user controller');
   }
@@ -39,7 +39,7 @@ export class UsersController extends BaseController<User, UserCreateDto>{
       
 
       try {
-         // Lanza error usuario no encontrado.
+        // Lanza error usuario no encontrado.
       if (!user) {
         next(new HttpError(401, 'Unauthorized', 'Invalid email or password'));
         return;
@@ -78,7 +78,7 @@ export class UsersController extends BaseController<User, UserCreateDto>{
 
     // SEGURIDAD: HASHING: Si la contraseña es válida, pasa a ser hasheada utilizando Auth.hash() de la clase Auth.
     // Tambien se crea un objeto userData que contiene los datos del usuario proporcionados en req.body como UserCreateDto de nuevo. Entonces la contraseña ya hasheada se asigna a la propiedad password de user
-   try {
+  try {
     
       const userData = req.body as UserCreateDto; // 
       userData.password = await Auth.hash(userData.password); 
@@ -103,7 +103,4 @@ export class UsersController extends BaseController<User, UserCreateDto>{
     await super.update(req, res, next);
   }
 
- }
-
- 
-
+};

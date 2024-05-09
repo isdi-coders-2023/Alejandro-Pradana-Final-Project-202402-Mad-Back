@@ -76,7 +76,7 @@ describe('Given an instance of the UsersController class', () => {
       });
     });
 
-   // The request body is valid
+  // The request body is valid
 
     describe('And an error occurs during the create process', () => {
       test('Should call next with an error', async () => {

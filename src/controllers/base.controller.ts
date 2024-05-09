@@ -9,14 +9,14 @@ const debug = createDebug('W9E:base:controller');
 export abstract class BaseController<T, C> {
   // Esta tiene un constructor que recibe instancia repo que implementa la interfaz Repo la cual define los métodos genéricos readAll, readById, create, update y delete
   constructor ( protected readonly repo: Repo<T, C>,
-     protected readonly validateCreateDtoSchema: Joi.ObjectSchema<C>,
+    protected readonly validateCreateDtoSchema: Joi.ObjectSchema<C>,
     protected readonly validateUpdateDtoSchema: Joi.ObjectSchema<C>
   ) {
 
   }
 
   // Maneja  solicitudes para obtener todos los objetos de tipo T. Llama readAll a traves del repo devolviendolos en formato JSON. 
-   async getAll(req: Request, res: Response, next: NextFunction) {
+  async getAll(req: Request, res: Response, next: NextFunction) {
     try {
       const result = await this.repo.readAll();
       res.json(result);
@@ -29,8 +29,8 @@ export abstract class BaseController<T, C> {
   async getById(req: Request, res: Response, next: NextFunction) {
     const { id } = req.params;
     try {
-     const result = await this.repo.readById(id);
-     res.json(result)
+    const result = await this.repo.readById(id);
+    res.json(result)
     } catch (error) {
       next(error);
     }

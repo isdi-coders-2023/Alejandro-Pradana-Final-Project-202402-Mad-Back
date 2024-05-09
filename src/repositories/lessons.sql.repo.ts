@@ -49,7 +49,7 @@ export class LessonsSqlRepo implements Repo<Lesson, LessonCreateDto> {
     return lesson;
   }
 
-   async create(data: LessonCreateDto) {
+  async create(data: LessonCreateDto) {
     return this.prisma.lesson.create({
       data: { 
         ...data,
@@ -74,7 +74,7 @@ export class LessonsSqlRepo implements Repo<Lesson, LessonCreateDto> {
     })
   }
 
-   async delete(id: string): Promise<Lesson> {
+  async delete(id: string): Promise<Lesson> {
     const lesson = await this.prisma.lesson.findUnique({
       where: { id },
       select,
@@ -89,4 +89,3 @@ export class LessonsSqlRepo implements Repo<Lesson, LessonCreateDto> {
     })
   }
 }
-
