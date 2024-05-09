@@ -17,4 +17,3 @@ export type UserCreateDto = {
   password: string;
 
 }
-

@@ -13,6 +13,6 @@ export type LessonCreateDto = {
   title: string;
   userId: string;
   content: string;
-   category:  'Humanities' | 'Science' | 'Sports' | 'Art' | 'Technology' | 'Social_Science';
-   description: string;
+  category:  'Humanities' | 'Science' | 'Sports' | 'Art' | 'Technology' | 'Social_Science';
+  description: string;
 }
