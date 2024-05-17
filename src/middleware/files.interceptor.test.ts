@@ -42,15 +42,12 @@ describe('Given a instance of the class FilesInterceptor', () => {
       upload: jest.fn().mockResolvedValue({}),
     } as unknown as typeof v2.uploader;
 
-    describe('And file is not valid', () => {
+    describe('And file has not been uploaded', () => {
       test('Then it should call next with an error', async () => {
         req.file = undefined;
         await interceptor.cloudinaryUpload(req, res, next);
-        expect(next).toHaveBeenCalledWith(
-          expect.objectContaining({
-            message: 'No file uploaded',
-          })
-        );
+        expect(req.body.avatar).toBe('https://res.cloudinary.com/djzn9f9kc/image/upload/v1715610754/avatar0_puca1b.jpg');
+        expect(next).toHaveBeenCalled();
       });
     });
 

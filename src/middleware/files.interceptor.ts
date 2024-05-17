@@ -3,7 +3,7 @@ import { v2 } from 'cloudinary';
 import createDebug from 'debug';
 import multer from 'multer';
 import { HttpError } from './errors.middleware.js';
-const debug = createDebug('W7E:files:interceptor');
+const debug = createDebug('W9E:files:interceptor');
 
 export class FilesInterceptor {
   constructor() {
@@ -11,6 +11,7 @@ export class FilesInterceptor {
   }
 
   singleFile(fieldName = 'avatar') {
+    console.log("singlefile");
     debug('Creating single file middleware');
     const storage = multer.diskStorage({
       destination: 'uploads/',
@@ -24,16 +25,17 @@ export class FilesInterceptor {
 
     return (req: Request, res: Response, next: NextFunction) => {
       debug('Uploading single file');
-      const previosBoy = req.body as Record<string, unknown>;
+      const previosBody = req.body as Record<string, unknown>;
       middleware(req, res, next);
-      req.body = { ...previosBoy, ...req.body } as unknown;
+      req.body = { ...previosBody, ...req.body } as unknown;
     };
   }
 
   async cloudinaryUpload(req: Request, res: Response, next: NextFunction) {
     debug('Uploading file to cloudinary');
+    console.log("upload");
     const options = {
-      folder: 'bc2024_1',
+      folder: 'profile_pics',
       // eslint-disable-next-line @typescript-eslint/naming-convention
       use_filename: true,
       // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -42,7 +44,10 @@ export class FilesInterceptor {
     };
 
     if (!req.file) {
-      next(new HttpError(400, 'Bad request', 'No file uploaded'));
+      
+      req.body.avatar = 'https://res.cloudinary.com/djzn9f9kc/image/upload/v1715610754/avatar0_puca1b.jpg'
+
+      next();
       return;
     }
 
@@ -50,7 +55,7 @@ export class FilesInterceptor {
 
     try {
       const result = await v2.uploader.upload(finalPath, options);
-      req.body.cloudinary = result;
+      req.body.avatar = result.secure_url;
       next();
     } catch (error) {
       next(
