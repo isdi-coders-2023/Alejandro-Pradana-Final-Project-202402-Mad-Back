@@ -1,4 +1,4 @@
-import { type Lesson } from "./lesson";
+import { type Lesson } from "./lesson.js";
 
 export type User = {
   id: string;
@@ -15,5 +15,5 @@ export type UserCreateDto = {
   name: string;
   email: string;
   password: string;
-
+  avatar?: string;
 }

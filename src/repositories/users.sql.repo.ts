@@ -13,6 +13,7 @@ const select = {
   id: true,
   name: true,
   email: true,
+  avatar: true,
   role: true,
   lessons: {
     select: {
@@ -77,6 +78,7 @@ constructor(private readonly prisma: PrismaClient) {
   }
 
   async create(data: UserCreateDto) {
+    console.log("repo.create",data);
   try {
     const newUser = await this.prisma.user.create({
       data: {

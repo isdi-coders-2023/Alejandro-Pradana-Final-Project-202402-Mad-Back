@@ -101,69 +101,69 @@ describe('Given a instance of the class TestController', () => {
     });
   });
 
-  // Describe('When we use the method create with INVALID data', () => {
-  //   test('Then it should call next with an error', async () => {
-  //     (testCreateDtoSchema.validate as jest.Mock).mockReturnValueOnce({
-  //       error: new Error('error'),
-  //       value: {},
-  //     });
-  //     const article = { title: 'title' };
-  //     req.body = article;
-  //     await controller.create(req, res, next);
-  //     expect(next).toHaveBeenCalledWith(
-  //       new HttpError(406, 'Not Acceptable', 'error')
-  //     );
-  //   });
-  // });
+  describe('When we use the method create with INVALID data', () => {
+    test('Then it should call next with an error', async () => {
+      (testCreateDtoSchema.validate as jest.Mock).mockReturnValueOnce({
+        error: new Error('error'),
+        value: {},
+      });
+      const article = { title: 'title' };
+      req.body = article;
+      await controller.create(req, res, next);
+      expect(next).toHaveBeenCalledWith(
+        new HttpError(406, 'Not Acceptable', 'error')
+      );
+    });
+  });
 
-  // describe('When we use the method create and repo throw an ERROR', () => {
-  //   test('Then it should call repo.create and next', async () => {
-  //     const error = new Error('Something went wrong');
-  //     (repo.create as jest.Mock).mockRejectedValue(error);
-  //     const article = { title: 'title', author: 'autor' };
-  //     req.body = article;
-  //     await controller.create(req, res, next);
-  //     expect(next).toHaveBeenCalledWith(error);
-  //   });
-  // });
+  describe('When we use the method create and repo throw an ERROR', () => {
+    test('Then it should call repo.create and next', async () => {
+      const error = new Error('Something went wrong');
+      (repo.create as jest.Mock).mockRejectedValue(error);
+      const article = { title: 'title', author: 'autor' };
+      req.body = article;
+      await controller.create(req, res, next);
+      expect(next).toHaveBeenCalledWith(error);
+    });
+  });
 
-  // describe('When we use the method update', () => {
-  //   test('Then it should call repo.update', async () => {
-  //     const article = { title: 'title', authorId: 'test' };
-  //     req.params = { id: '1' };
-  //     req.body = article;
-  //     (repo.update as jest.Mock).mockResolvedValue(article);
-  //     await controller.update(req, res, next);
-  //     expect(repo.update).toHaveBeenCalledWith('1', article);
-  //     expect(res.json).toHaveBeenCalledWith(article);
-  //   });
-  // });
+  describe('When we use the method update', () => {
+    test('Then it should call repo.update', async () => {
+      const article = { title: 'title', authorId: 'test' };
+      req.params = { id: '1' };
+      req.body = article;
+      (repo.update as jest.Mock).mockResolvedValue(article);
+      await controller.update(req, res, next);
+      expect(repo.update).toHaveBeenCalledWith('1', article);
+      expect(res.json).toHaveBeenCalledWith(article);
+    });
+  });
 
-  // describe('When we use the method update with INVALID data', () => {
-  //   test('Then it should call next with an error', async () => {
-  //     (testUpdateDtoSchema.validate as jest.Mock).mockReturnValueOnce({
-  //       error: new Error('error'),
-  //       value: {},
-  //     });
-  //     const article = { authorId: 34 };
-  //     req.body = article;
-  //     await controller.update(req, res, next);
-  //     expect(next).toHaveBeenCalledWith(
-  //       new HttpError(406, 'Not Acceptable', 'error')
-  //     );
-  //   });
-  // });
+  describe('When we use the method update with INVALID data', () => {
+    test('Then it should call next with an error', async () => {
+      (testUpdateDtoSchema.validate as jest.Mock).mockReturnValueOnce({
+        error: new Error('error'),
+        value: {},
+      });
+      const article = { authorId: 34 };
+      req.body = article;
+      await controller.update(req, res, next);
+      expect(next).toHaveBeenCalledWith(
+        new HttpError(406, 'Not Acceptable', 'error')
+      );
+    });
+  });
 
-  // describe('When we use the method update and repo throw an ERROR', () => {
-  //   test('Then it should call repo.update and next', async () => {
-  //     const error = new Error('Something went wrong');
-  //     (repo.update as jest.Mock).mockRejectedValue(error);
-  //     const article = { title: 'title', authorId: 'test' };
-  //     req.body = article;
-  //     await controller.update(req, res, next);
-  //     expect(next).toHaveBeenCalledWith(error);
-  //   });
-  // });
+  describe('When we use the method update and repo throw an ERROR', () => {
+    test('Then it should call repo.update and next', async () => {
+      const error = new Error('Something went wrong');
+      (repo.update as jest.Mock).mockRejectedValue(error);
+      const article = { title: 'title', authorId: 'test' };
+      req.body = article;
+      await controller.update(req, res, next);
+      expect(next).toHaveBeenCalledWith(error);
+    });
+  });
 
   describe('When we use the method delete', () => {
     test('Then it should call repo.delete', async () => {

@@ -87,7 +87,7 @@ export class UsersController extends BaseController<User, UserCreateDto>{
       const newUser = await this.repo.create(userData);
       res.status(201).json(newUser);
 
-     
+
     } catch (error) {
       next(error);
     }
@@ -100,6 +100,8 @@ export class UsersController extends BaseController<User, UserCreateDto>{
       req.body.password = await Auth.hash(req.body.password as string)
     }
 
+    console.log(req.body)
+    delete req.body.payload;  // Motivo: continuaba con unknow argument payload y no permitia pasar a la siguiente linea
     await super.update(req, res, next);
   }
 
