@@ -161,7 +161,7 @@ describe('Given a instance of the class AuthInterceptor', () => {
       });
     });
 
-     describe('And item is not found in the repository', () => {
+    describe('And item is not found in the repository', () => {
       test('Then it should call next with error', async () => {
         req.body = { payload: { role: 'user', id: '123' } };
         repo.readById = jest.fn().mockResolvedValue(undefined);

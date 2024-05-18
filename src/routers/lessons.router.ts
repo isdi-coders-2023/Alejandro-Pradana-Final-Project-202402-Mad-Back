@@ -25,7 +25,7 @@ export class LessonsRouter {
     this.router.get('/:id', authInterceptor.authentication.bind(authInterceptor),
     controller.getById.bind(controller));
 
-     this.router.get('/search/:category', authInterceptor.authentication.bind(authInterceptor),
+    this.router.get('/search/:category', authInterceptor.authentication.bind(authInterceptor),
     controller.getByCategory.bind(controller));
 
     this.router.post('/', authInterceptor.authentication.bind(authInterceptor),
@@ -38,5 +38,7 @@ export class LessonsRouter {
     this.router.delete('/:id', authInterceptor.authentication.bind(authInterceptor),
     authInterceptor.authorization(lessonsSqlRepo, 'user').bind(authInterceptor),
     controller.delete.bind(controller));
+
+   
   }
 }
