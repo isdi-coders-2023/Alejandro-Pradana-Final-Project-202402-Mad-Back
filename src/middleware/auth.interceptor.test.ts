@@ -2,7 +2,7 @@ import { type Request, type Response } from 'express';
 import { AuthInterceptor } from './auth.interceptor';
 import { Auth } from '../services/auth.services';
 import { HttpError } from './errors.middleware';
-
+import { type Repo } from '../repositories/type.repo';
 
 describe('Given a instance of the class AuthInterceptor', () => {
   const interceptor = new AuthInterceptor();
@@ -35,7 +35,7 @@ describe('Given a instance of the class AuthInterceptor', () => {
         );
       });
     });
-    describe('When we use the method authentication and token is INVALIDO', () => {
+    describe('When we use the method authentication and token is INVALID', () => {
       test('Then it should call next with error', () => {
         req.get = jest.fn().mockReturnValue('Bearer myToken');
         // eslint-disable-next-line max-nested-callbacks
@@ -43,7 +43,7 @@ describe('Given a instance of the class AuthInterceptor', () => {
           throw new Error('Invalid token');
         });
         interceptor.authentication(req, res, next);
-        expect(next).toHaveBeenCalledWith(new Error('Token invalid'));
+        expect(next).toHaveBeenCalledWith(new Error('Invalid Token'));
       });
     });
   });
@@ -54,9 +54,14 @@ describe('Given a instance of the class AuthInterceptor', () => {
     } as unknown as Request;
     const res = {} as unknown as Response;
     const next = jest.fn();
-    
-    // And user is admin
-    
+    describe('And user is admin', () => {
+      test('Then it should call next', () => {
+        req.body.payload.role = 'Admin';
+        interceptor.isAdmin(req, res, next);
+        expect(next).toHaveBeenCalled();
+      });
+    });
+
     describe('And user is NOT admin', () => {
       test('Then it should call next with error', () => {
         req.body.payload.role = 'user';
@@ -68,10 +73,22 @@ describe('Given a instance of the class AuthInterceptor', () => {
             'You are not allowed to access this resource'
           )
         );
-        
       });
     });
+
+    test('Then it should call next if user is Admin', () => {
+      const reqAdmin = {
+        body: { payload: { role: 'Admin' } },
+      } as unknown as Request;
+      const nextAdmin = jest.fn();
+
+      interceptor.isAdmin(reqAdmin, res, nextAdmin);
+      expect(nextAdmin).toHaveBeenCalledWith();
+    });
   });
+
+
+   
 
   describe('When we use the method authorization', () => {
     const req = {
@@ -83,9 +100,9 @@ describe('Given a instance of the class AuthInterceptor', () => {
 
     type T = { id: string };
 
-    const repo: { readById: (id: string) => Promise<T | undefined> } = {
+    const repo: Repo<T, T> = {
       readById: jest.fn().mockResolvedValue({ id: '123' }),
-    };
+    } as unknown as Repo<T, T>;
 
     test('Then it should call next', async () => {
       await interceptor.authorization(repo)(req, res, next);
@@ -94,9 +111,9 @@ describe('Given a instance of the class AuthInterceptor', () => {
 
     describe('And user is admin', () => {
       test('Then it should call next', async () => {
-        req.body = { payload: { role: 'admin' } };
+        req.body = { payload: { role: 'Admin' } };
         await interceptor.authorization(repo)(req, res, next);
-        expect(next).toHaveBeenCalled();
+        expect(next).toHaveBeenCalledWith();
       });
     });
 
@@ -141,6 +158,17 @@ describe('Given a instance of the class AuthInterceptor', () => {
         req.body = { payload: { role: 'user', id: '123' } };
         await interceptor.authorization(repo, 'id')(req, res, next);
         expect(next).toHaveBeenCalled();
+      });
+    });
+
+    describe('And item is not found in the repository', () => {
+      test('Then it should call next with error', async () => {
+        req.body = { payload: { role: 'user', id: '123' } };
+        repo.readById = jest.fn().mockResolvedValue(undefined);
+        await interceptor.authorization(repo)(req, res, next);
+        expect(next).toHaveBeenCalledWith(
+          new HttpError(404, 'Not Found', 'Resource not found')
+        );
       });
     });
 
