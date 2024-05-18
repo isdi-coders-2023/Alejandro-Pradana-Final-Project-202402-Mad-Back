@@ -1,8 +1,8 @@
 import { Router as createRouter } from 'express';
 import createDebug from 'debug';
 import { type UsersController } from '../controllers/users.controller.js';
-import { UsersSqlRepo } from '../repositories/users.sql.repo.js';
 import { type AuthInterceptor } from '../middleware/auth.interceptor.js';
+import { type FilesInterceptor } from '../middleware/files.interceptor.js';
 
 const debug = createDebug('W9E:users:router');
 
@@ -11,20 +11,26 @@ export class UsersRouter {
 
   constructor( readonly controller: UsersController,
     readonly authInterceptor: AuthInterceptor,
+    readonly filesInterceptor: FilesInterceptor
   ) {
     debug('Instantiated users router');
 
-    this.router.post('/register', controller.create.bind(controller));
+    this.router.post('/register', 
+    filesInterceptor.singleFile('avatar'),
+    filesInterceptor.cloudinaryUpload.bind(filesInterceptor),
+    controller.create.bind(controller));
 
     this.router.post('/login', controller.login.bind(controller));
 
     this.router.get('/', controller.getAll.bind(controller))
     this.router.get('/:id', controller.getById.bind(controller))
 
-    this.router.patch('/:id', authInterceptor.authentication.bind(authInterceptor), 
+    this.router.patch('/:id', 
+    authInterceptor.authentication.bind(authInterceptor), 
     controller.update.bind(controller))
 
-    this.router.delete('/:id', authInterceptor.authentication.bind(authInterceptor),
+    this.router.delete('/:id', 
+    authInterceptor.authentication.bind(authInterceptor),
     controller.delete.bind(controller))
   }
 }

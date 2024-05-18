@@ -4,17 +4,19 @@ import { HttpError } from './errors.middleware.js';
 
 // Auth: framework autentificación, como JWT : JSON Web Token, es un objeto que reune la información del token . Payload es un tipo que representa la info util (payload = carga útil)
 import { Auth, type Payload } from '../services/auth.services.js';
-const debug = createDebug('W9E:auth:interceptor');
 
-// Se define un tipo Repo que puede leer entidades del tipo T por su id.
+const debug = createDebug('W9E:auth:interceptor');
 type Repo<T> = {
-  readById(id: string): Promise<T | undefined>;
-}
+    readById(id: string): Promise<T | undefined>;
+  }
 
 export class AuthInterceptor {
   constructor() {
     debug('Instantiated auth interceptor');
   }
+
+
+  
 
 
   // Método de autentificación para solicitudes.
@@ -23,7 +25,7 @@ export class AuthInterceptor {
 
     // Se obtiene el encabezado de la autorización de la req. Vendrá con un token JWT necesario para el proceso. El encabezado Bearer viene por defecto con todos los tokens JWT.
     const data = req.get('Authorization');
-
+    console.log(data);
     // Error en caso de expired o invalid. 
     const error = new HttpError(498, ' Token expired/invalid', 'Token invalid');
 
@@ -65,11 +67,10 @@ export class AuthInterceptor {
           'You are not allowed to access this resource'
         )
       );
-      // Termina la ejecución de la función en condición de no admin
+      // Termina la ejecución de la función en condición de no admin, una vez comprobado que el usuario es Admin, se llama a next para que continue con el siguiente proceso.
       return;
     }
-    
-    // Una vez comprobado que el usuario es Admin, se llama a next para que continue con su proceso. 
+
     next();
   }
 
