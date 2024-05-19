@@ -1,7 +1,7 @@
 import { type Request, type Response } from 'express';
 import { type LessonsSqlRepo } from '../repositories/lessons.sql.repo';
 import { LessonsController } from './lessons.controller';
-import { type Category } from '@prisma/client';
+
 
 describe('Given a instance of the class LessonsController', () => {
   const repo = {

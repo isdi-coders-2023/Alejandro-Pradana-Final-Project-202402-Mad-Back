@@ -1,7 +1,7 @@
 import { type PrismaClient } from "@prisma/client";
 import createDebug from 'debug';
 import {type Category, type Lesson, type LessonCreateDto } from "../entities/lesson.js";
-import { type WithSearchCategory, type Repo } from "./type.repo.js";
+import { type WithSearchCategory } from "./type.repo.js";
 import { HttpError } from "../middleware/errors.middleware.js";
 
 const debug = createDebug('W9E:lessons:repo:sql')

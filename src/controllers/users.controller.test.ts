@@ -51,7 +51,7 @@ describe('Given an instance of the UsersController class', () => {
 
     describe('And the user is found and password is valid', () => {
       test('Should call Auth.signJwt and return HTTP 200 with token and message', async () => {
-        const user = { id: '1', role: 'user', password: 'hashedPassword'};
+        const user = { id: '1', role: 'user', password: 'hashedFakePassword'};
         req.body = { email: 'test@example.com', password: 'password'};
         (repo.searchForLogin as jest.Mock).mockResolvedValue(user);
   
@@ -81,7 +81,7 @@ describe('Given an instance of the UsersController class', () => {
 
     describe('And the password is invalid', () => {
       test('Should call next with an error', async () => {
-        req.body = { email: 'test@example.com', password: 'password' };
+        req.body = { email: 'test@example.com', password: 'fakePassword' };
         const user = { id: '1', password: 'password' };
         (repo.searchForLogin as jest.Mock).mockResolvedValue(user);
         Auth.compare = jest.fn().mockResolvedValue(false);
@@ -115,7 +115,7 @@ describe('Given an instance of the UsersController class', () => {
 
     describe('And an error occurs during the create process', () => {
       test('Should call next with the error', async () => {
-        req.body = { name: 'test', password: 'testPassword' };
+        req.body = { name: 'test', password: 'fakePassword' };
         (repo.create as jest.Mock).mockRejectedValue(new Error('Create error'));
         await controller.create(req, res, next);
         expect(next).toHaveBeenCalledWith(new Error('Create error'));

@@ -101,21 +101,6 @@ describe('Given a instance of the class TestController', () => {
     });
   });
 
-  // Describe('When we use the method create with INVALID data', () => {
-  // //   test('Then it should call next with an error', async () => {
-  // //     (testCreateDtoSchema.validate as jest.Mock).mockReturnValueOnce({
-  // //       error: new Error('error'),
-  // //       value: {},
-  // //     });
-  // //     const article = { title: 'title' };
-  // //     req.body = article;
-  // //     await controller.create(req, res, next);
-  // //     expect(next).toHaveBeenCalledWith(
-  // //       new HttpError(406, 'Not Acceptable', 'error')
-  // //     );
-  // //   });
-  // // });
-
   describe('When we use the method create and repo throw an ERROR', () => {
     test('Then it should call repo.create and next', async () => {
       const error = new Error('Something went wrong');
@@ -138,21 +123,6 @@ describe('Given a instance of the class TestController', () => {
       expect(res.json).toHaveBeenCalledWith(article);
     });
   });
-
-  // Describe('When we use the method update with INVALID data', () => {
-  // //   test('Then it should call next with an error', async () => {
-  // //     (testUpdateDtoSchema.validate as jest.Mock).mockReturnValueOnce({
-  // //       error: new Error('error'),
-  // //       value: {},
-  // //     });
-  // //     const article = { authorId: 34 };
-  // //     req.body = article;
-  // //     await controller.update(req, res, next);
-  // //     expect(next).toHaveBeenCalledWith(
-  // //       new HttpError(406, 'Not Acceptable', 'error')
-  // //     );
-  // //   });
-  //  });
 
   describe('When we use the method update and repo throw an ERROR', () => {
     test('Then it should call repo.update and next', async () => {
