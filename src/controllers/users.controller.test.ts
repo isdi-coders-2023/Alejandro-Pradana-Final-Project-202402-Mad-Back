@@ -49,17 +49,17 @@ describe('Given an instance of the UsersController class', () => {
 
     describe('And the user is found and password is valid', () => {
       test('Should call Auth.signJwt and return HTTP 200 with token and message', async () => {
-        const user = { id: '1', role: 'user', password: 'hashedFakePassword'};
+        const testUser = { id: '1', role: 'user', password: 'hashedFakePassword'};
         req.body = { email: 'test@example.com', password: 'password'};
-        (repo.searchForLogin as jest.Mock).mockResolvedValue(user);
+        (repo.searchForLogin as jest.Mock).mockResolvedValue(testUser);
   
         Auth.compare = jest.fn().mockResolvedValue(true);
 
         await controller.login(req, res, next);
 
         expect(Auth.signJwt).toHaveBeenCalledWith({
-          id: user.id,
-          role: user.role
+          id: testUser.id,
+          role: testUser.role
         });
 
         expect(res.status).toHaveBeenCalledWith(200);
