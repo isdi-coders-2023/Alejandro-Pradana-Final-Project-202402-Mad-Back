@@ -49,7 +49,8 @@ describe('Given an instance of the UsersController class', () => {
 
     describe('And the user is found and password is valid', () => {
       test('Should call Auth.signJwt and return HTTP 200 with token and message', async () => {
-        const testUser = { id: '1', role: 'user', password: 'hashedFakePassword'};
+        const hashedPassword = await Auth.hash('password')
+        const testUser = { id: '1', role: 'user', password: hashedPassword};
         req.body = { email: 'test@example.com', password: 'password'};
         (repo.searchForLogin as jest.Mock).mockResolvedValue(testUser);
   
