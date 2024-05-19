@@ -4,8 +4,6 @@ import { Auth } from '../services/auth.services';
 import { HttpError } from '../middleware/errors.middleware';
 import { type Request, type Response } from 'express';
 
-
-
 describe('Given an instance of the UsersController class', () => {
   const repo: UsersSqlRepo = {
     readAll: jest.fn(),

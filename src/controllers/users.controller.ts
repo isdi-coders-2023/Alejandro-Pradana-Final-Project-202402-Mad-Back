@@ -1,5 +1,4 @@
 // Controller. Modelo MVC. Maneja solicitudes entrantes (requests) del cliente, las procesa y da respuesta. Este maneja operaciones realcionadas con la gestión de usuarios, a saber: autentificación de usuarios, lectura, creación, actualización y eliminación. 
-
 import createDebug from 'debug';
 import { type User, type UserCreateDto } from '../entities/user.js';
 import { type NextFunction, type Request, type Response } from 'express';
