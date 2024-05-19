@@ -16,7 +16,7 @@ describe('Given an instance of the UsersController class', () => {
     delete: jest.fn(),
   } as unknown as UsersSqlRepo;
 
-  
+  jest.spyOn(Auth, 'signJwt').mockReturnValue('token');
 
   const req = {} as unknown as Request;
   const res: Response = {
@@ -37,6 +37,35 @@ describe('Given an instance of the UsersController class', () => {
         req.body = {};
         await controller.login(req, res, next);
         expect(next).toHaveBeenCalledWith(expect.any(HttpError));
+      });
+    });
+
+    //  Describe('And an error occurs during the login process', () => {
+    //   test('Should call next with the error', async () => {
+    //     req.body = { email: 'test@example.com', password: 'password' };
+    //     (repo.searchForLogin as jest.Mock).mockRejectedValue(new HttpError(500, 'Internal Server Error', 'An unexpected error occurred'));
+    //     await controller.login(req, res, next);
+    //     expect(next).toHaveBeenCalledWith(expect.any(HttpError));
+    //   });
+    // });
+
+    describe('And the user is found and password is valid', () => {
+      test('Should call Auth.signJwt and return HTTP 200 with token and message', async () => {
+        const user = { id: '1', role: 'user', password: 'hashedPassword'};
+        req.body = { email: 'test@example.com', password: 'password'};
+        (repo.searchForLogin as jest.Mock).mockResolvedValue(user);
+  
+        Auth.compare = jest.fn().mockResolvedValue(true);
+
+        await controller.login(req, res, next);
+
+        expect(Auth.signJwt).toHaveBeenCalledWith({
+          id: user.id,
+          role: user.role
+        });
+
+        expect(res.status).toHaveBeenCalledWith(200);
+        expect(res.json).toHaveBeenCalledWith({ token: 'token', message: 'Login successful'});
       });
     });
 
@@ -81,6 +110,15 @@ describe('Given an instance of the UsersController class', () => {
         (repo.create as jest.Mock).mockRejectedValue(new Error());
         await controller.create(req, res, next);
         expect(next).toHaveBeenCalledWith(expect.any(Error));
+      });
+    });
+
+    describe('And an error occurs during the create process', () => {
+      test('Should call next with the error', async () => {
+        req.body = { name: 'test', password: 'testPassword' };
+        (repo.create as jest.Mock).mockRejectedValue(new Error('Create error'));
+        await controller.create(req, res, next);
+        expect(next).toHaveBeenCalledWith(new Error('Create error'));
       });
     });
   });

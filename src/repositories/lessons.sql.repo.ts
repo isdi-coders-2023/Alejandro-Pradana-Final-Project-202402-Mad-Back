@@ -1,8 +1,8 @@
 import { type PrismaClient } from "@prisma/client";
 import createDebug from 'debug';
-import { type Lesson, type LessonCreateDto } from "../entities/lesson";
-import { type Repo } from "./type.repo";
-import { HttpError } from "../middleware/errors.middleware";
+import {type Category, type Lesson, type LessonCreateDto } from "../entities/lesson.js";
+import { type WithSearchCategory, type Repo } from "./type.repo.js";
+import { HttpError } from "../middleware/errors.middleware.js";
 
 const debug = createDebug('W9E:lessons:repo:sql')
 
@@ -15,6 +15,7 @@ const select = {
   userId: true,
   user: {
     select: {
+      id: true,
       name: true,
       email: true,
       role: true,
@@ -22,9 +23,9 @@ const select = {
   },
 };
 
-export class LessonsSqlRepo implements Repo<Lesson, LessonCreateDto> {
+export class LessonsSqlRepo implements WithSearchCategory<Lesson, LessonCreateDto> {
   constructor(private readonly prisma: PrismaClient) {
-    debug('Instatiated classes sql repository')
+    debug('Instatiated lessons sql repository')
   }
  
 
@@ -43,7 +44,7 @@ export class LessonsSqlRepo implements Repo<Lesson, LessonCreateDto> {
 
 
     if(!lesson) {
-      throw new HttpError(404, 'Not Found', `Class ${id} not found`)
+      throw new HttpError(404, 'Not Found', `Lesson ${id} not found`)
     }
 
     return lesson;
@@ -80,12 +81,26 @@ export class LessonsSqlRepo implements Repo<Lesson, LessonCreateDto> {
       select,
     });
     if(!lesson) {
-      throw new HttpError(404, 'Not Found', `Lesson ${id} Not Foound`);
+      throw new HttpError(404, 'Not Found', `Lesson ${id} Not Found`);
     }
 
     return this.prisma.lesson.delete({
       where: { id },
       select,
     })
+  }
+
+  async readByCategory(category: Category) {
+    const lesson = await this.prisma.lesson.findMany({
+      where: { category },
+      select,
+    });
+
+
+    if(!lesson) {
+      throw new HttpError(404, 'Not Found', `Lesson ${category} not found`)
+    }
+
+    return lesson;
   }
 }

@@ -23,7 +23,7 @@ export class LessonsController extends BaseController<Lesson, LessonCreateDto> {
 
   async create(req: Request, res: Response, next:NextFunction) {
     debug('Creating lesson');
-    // Const userRole = req.userRepo.readById;
+    
     req.body.userId = (req.body.payload as Payload).id;
 
     const { payload, ...rest } = req.body as LessonCreateDto & {

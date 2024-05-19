@@ -6,7 +6,7 @@ import { type Category } from '@prisma/client';
 describe('Given a instance of the class LessonsController', () => {
   const repo = {
     create: jest.fn(),
-    getByCategory: jest.fn(),
+    readByCategory: jest.fn(),
   } as unknown as LessonsSqlRepo;
 
   const userRepo = {
@@ -37,7 +37,7 @@ describe('Given a instance of the class LessonsController', () => {
 
   describe('When we use the method create', () => {
     test('Then it should call repo.create', async () => {
-      const lesson = { title: 'title', userId: 'test' };
+      const lesson = { content: '', userId: 'test' };
       const validateLesson = { ...lesson, content: '' };
       req.body = { ...lesson, payload: { id: 'test' } };
       (repo.create as jest.Mock).mockResolvedValue(lesson);
@@ -49,25 +49,25 @@ describe('Given a instance of the class LessonsController', () => {
   });
 
  
-  // Describe('When getByCategory is called', () => {
-  //   test('Then it should call repo.readByCategory', async () => {
-  //     const result = [{ title: 'Fake lesson' }, { title: 'Lesson fake' }];
-  //     (repo.readByCategory as jest.Mock).mockResolvedValue(result);
+  describe('When getByCategory is called', () => {
+    test('Then it should call repo.readByCategory', async () => {
+      const result = [{ title: 'Fake lesson' }, { title: 'Lesson fake' }];
+      (repo.readByCategory as jest.Mock).mockResolvedValue(result);
 
-  //     await controller.getByCategory(req, res, next);
+      await controller.getByCategory(req, res, next);
 
-  //     expect(repo.readByCategory).toHaveBeenCalledWith('TestCategory'); 
-  //     expect(res.json).toHaveBeenCalledWith(result);
-  //   });
+      expect(repo.readByCategory).toHaveBeenCalledWith('TestCategory'); 
+      expect(res.json).toHaveBeenCalledWith(result);
+    });
 
-  //   test('Then it should handle errors by calling next', async () => {
-  //     const error = new Error('Something went wrong');
-  //     (repo.readByCategory as jest.Mock).mockRejectedValue(error);
+    test('Then it should handle errors by calling next', async () => {
+      const error = new Error('Something went wrong');
+      (repo.readByCategory as jest.Mock).mockRejectedValue(error);
 
-  //     await controller.getByCategory(req, res, next);
+      await controller.getByCategory(req, res, next);
 
-  //     expect(next).toHaveBeenCalledWith(error);
-  //   });
-  // });
+      expect(next).toHaveBeenCalledWith(error);
+    });
+  });
 
 });

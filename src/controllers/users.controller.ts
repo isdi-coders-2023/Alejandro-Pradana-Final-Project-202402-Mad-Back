@@ -58,7 +58,7 @@ export class UsersController extends BaseController<User, UserCreateDto>{
     // Si la busqueda resulta exitosa se devuelve la respuesta HTTP 200 con mensaje 
       res.status(200).json({ token, message: 'Login successful' });
       } catch (error) {
-        next(error);
+        next(new HttpError(500, 'Internal Server Error', 'An unexpected error occurred'));
       }
      
     }
@@ -100,7 +100,7 @@ export class UsersController extends BaseController<User, UserCreateDto>{
       req.body.password = await Auth.hash(req.body.password as string)
     }
 
-    console.log(req.body)
+   
     delete req.body.payload;  // Motivo: continuaba con unknow argument payload y no permitia pasar a la siguiente linea
     await super.update(req, res, next);
   }
