@@ -80,7 +80,8 @@ describe('Given an instance of the UsersController class', () => {
 
     describe('And the password is invalid', () => {
       test('Should call next with an error', async () => {
-        req.body = { email: 'test@example.com', password: 'fakePassword' };
+        const hashedPassword = await Auth.hash('password')
+        req.body = { email: 'test@example.com', password: hashedPassword };
         const user = { id: '1', password: 'password' };
         (repo.searchForLogin as jest.Mock).mockResolvedValue(user);
         Auth.compare = jest.fn().mockResolvedValue(false);
@@ -114,7 +115,8 @@ describe('Given an instance of the UsersController class', () => {
 
     describe('And an error occurs during the create process', () => {
       test('Should call next with the error', async () => {
-        req.body = { name: 'test', password: 'fakePassword' };
+        const hashedPassword = await Auth.hash('password')
+        req.body = { name: 'test', password: hashedPassword };
         (repo.create as jest.Mock).mockRejectedValue(new Error('Create error'));
         await controller.create(req, res, next);
         expect(next).toHaveBeenCalledWith(new Error('Create error'));
