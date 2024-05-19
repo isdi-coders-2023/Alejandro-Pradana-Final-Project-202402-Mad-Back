@@ -4,8 +4,6 @@ import { Auth } from '../services/auth.services';
 import { HttpError } from '../middleware/errors.middleware';
 import { type Request, type Response } from 'express';
 
-
-
 describe('Given an instance of the UsersController class', () => {
   const repo: UsersSqlRepo = {
     readAll: jest.fn(),
@@ -16,7 +14,7 @@ describe('Given an instance of the UsersController class', () => {
     delete: jest.fn(),
   } as unknown as UsersSqlRepo;
 
-  
+  jest.spyOn(Auth, 'signJwt').mockReturnValue('token');
 
   const req = {} as unknown as Request;
   const res: Response = {
@@ -40,6 +38,36 @@ describe('Given an instance of the UsersController class', () => {
       });
     });
 
+    //  Describe('And an error occurs during the login process', () => {
+    //   test('Should call next with the error', async () => {
+    //     req.body = { email: 'test@example.com', password: 'password' };
+    //     (repo.searchForLogin as jest.Mock).mockRejectedValue(new HttpError(500, 'Internal Server Error', 'An unexpected error occurred'));
+    //     await controller.login(req, res, next);
+    //     expect(next).toHaveBeenCalledWith(expect.any(HttpError));
+    //   });
+    // });
+
+    describe('And the user is found and password is valid', () => {
+      test('Should call Auth.signJwt and return HTTP 200 with token and message', async () => {
+        const hashedPassword = await Auth.hash('password')
+        const testUser = { id: '1', role: 'user', password: hashedPassword};
+        req.body = { email: 'test@example.com', password: 'password'};
+        (repo.searchForLogin as jest.Mock).mockResolvedValue(testUser);
+  
+        Auth.compare = jest.fn().mockResolvedValue(true);
+
+        await controller.login(req, res, next);
+
+        expect(Auth.signJwt).toHaveBeenCalledWith({
+          id: testUser.id,
+          role: testUser.role
+        });
+
+        expect(res.status).toHaveBeenCalledWith(200);
+        expect(res.json).toHaveBeenCalledWith({ token: 'token', message: 'Login successful'});
+      });
+    });
+
     // Simulación de inicio de sesión: req.body = {email, password}, después se simula el comportamiento de searchForLogin y con .mock...(null) se indica que la busqueda de usuario no devuelve nada, no se encuentra. Continua llamando al método login del controller pasándole req, res y next. Por último se verifica que la función next sea llamada con un objeto de HttpError
     describe('And the user is not found', () => {
       test('Should call next with an error', async () => {
@@ -52,7 +80,8 @@ describe('Given an instance of the UsersController class', () => {
 
     describe('And the password is invalid', () => {
       test('Should call next with an error', async () => {
-        req.body = { email: 'test@example.com', password: 'password' };
+        const hashedPassword = await Auth.hash('password')
+        req.body = { email: 'test@example.com', password: hashedPassword };
         const user = { id: '1', password: 'password' };
         (repo.searchForLogin as jest.Mock).mockResolvedValue(user);
         Auth.compare = jest.fn().mockResolvedValue(false);
@@ -81,6 +110,16 @@ describe('Given an instance of the UsersController class', () => {
         (repo.create as jest.Mock).mockRejectedValue(new Error());
         await controller.create(req, res, next);
         expect(next).toHaveBeenCalledWith(expect.any(Error));
+      });
+    });
+
+    describe('And an error occurs during the create process', () => {
+      test('Should call next with the error', async () => {
+        const hashedPassword = await Auth.hash('password')
+        req.body = { name: 'test', password: hashedPassword };
+        (repo.create as jest.Mock).mockRejectedValue(new Error('Create error'));
+        await controller.create(req, res, next);
+        expect(next).toHaveBeenCalledWith(new Error('Create error'));
       });
     });
   });

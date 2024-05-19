@@ -43,7 +43,7 @@ describe('Given a instance of the class AuthInterceptor', () => {
           throw new Error('Invalid token');
         });
         interceptor.authentication(req, res, next);
-        expect(next).toHaveBeenCalledWith(new Error('Invalid Token'));
+        expect(next).toHaveBeenCalledWith(new HttpError(498, 'Token expired/invalid', 'Token invalid'));
       });
     });
   });
